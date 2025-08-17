@@ -1,0 +1,11 @@
+{
+  "functions": {
+    "api/**/*.js": {
+      "runtime": "nodejs18.x"
+    }
+  },
+  "regions": ["bom1", "sin1"],
+  "env": {
+    "NODE_OPTIONS": "--enable-source-maps"
+  }
+}

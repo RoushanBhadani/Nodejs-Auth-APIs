@@ -1,0 +1,21 @@
+{
+  "name": "vercel-auth-api",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node server.js",
+    "vercel:dev": "vercel dev",
+    "lint": "echo 'Add your linter here'",
+    "test": "node --version"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cookie": "^0.6.0",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.7.0",
+    "zod": "^3.23.8"
+  }
+}
