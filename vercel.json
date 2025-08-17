@@ -1,11 +1,9 @@
 {
-  "functions": {
-    "api/**/*.js": {
-      "runtime": "nodejs18.x"
-    }
-  },
-  "regions": ["bom1", "sin1"],
-  "env": {
-    "NODE_OPTIONS": "--enable-source-maps"
-  }
+  "version": 2,
+  "builds": [
+    { "src": "api/index.js", "use": "@vercel/node" }
+  ],
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/index.js" }
+  ]
 }
