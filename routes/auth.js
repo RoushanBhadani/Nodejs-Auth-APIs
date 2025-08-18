@@ -3,9 +3,13 @@ import express from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+import { connectToDB } from "../lib/db.js"; // ✅ Import DB connection helper
 
 const router = express.Router();
 
+// =========================
+// Middleware: Auth Checker
+// =========================
 const authMiddleware = (req, res, next) => {
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1]; 
@@ -26,6 +30,8 @@ const authMiddleware = (req, res, next) => {
 // =========================
 router.post("/signup", async (req, res) => {
   try {
+    await connectToDB(); // ✅ Ensure DB connection
+
     const { username, email, password } = req.body;
 
     const existingUser = await User.findOne({ email });
@@ -47,6 +53,8 @@ router.post("/signup", async (req, res) => {
 // =========================
 router.post("/login", async (req, res) => {
   try {
+    await connectToDB(); // ✅ Ensure DB connection
+
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });
@@ -68,6 +76,8 @@ router.post("/login", async (req, res) => {
 // =========================
 router.get("/profile", authMiddleware, async (req, res) => {
   try {
+    await connectToDB(); // ✅ Ensure DB connection
+
     const user = await User.findById(req.user.id).select("-password"); // exclude password
     if (!user) return res.status(404).json({ error: "User not found" });
 
