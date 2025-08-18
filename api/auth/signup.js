@@ -1,15 +1,19 @@
+// api/auth/signup.js
 import { connectToDB } from '../../lib/db.js';
 import User from '../../models/User.js';
 import bcrypt from 'bcryptjs';
 import { signupSchema } from '../../lib/validate.js';
 import { signToken } from '../../lib/jwt.js';
 import { setAuthCookie } from '../../lib/cookies.js';
-import { created, badRequest, conflict, methodNotAllowed, serverError } from '../_utils/respond.js';
+import { created, badRequest, conflict, methodNotAllowed, serverError, preflight } from '../_utils/respond.js';
 
 export default async function handler(req, res) {
+  if (preflight(req, res)) return;
   if (req.method !== 'POST') return methodNotAllowed(res, ['POST']);
+
   try {
-    const parsed = signupSchema.safeParse(req.body);
+    const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : req.body;
+    const parsed = signupSchema.safeParse(body);
     if (!parsed.success) {
       return badRequest(res, 'Validation failed', parsed.error.flatten());
     }

@@ -1,11 +1,14 @@
+// api/auth/profile.js
 import { connectToDB } from '../../lib/db.js';
 import User from '../../models/User.js';
 import { getTokenFromRequest } from '../../lib/cookies.js';
 import { verifyToken } from '../../lib/jwt.js';
-import { ok, unauthorized, methodNotAllowed, serverError } from '../_utils/respond.js';
+import { ok, unauthorized, methodNotAllowed, serverError, preflight } from '../_utils/respond.js';
 
 export default async function handler(req, res) {
+  if (preflight(req, res)) return;
   if (req.method !== 'GET') return methodNotAllowed(res, ['GET']);
+
   try {
     const token = getTokenFromRequest(req);
     if (!token) return unauthorized(res, 'Missing token');

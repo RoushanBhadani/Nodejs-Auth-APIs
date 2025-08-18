@@ -1,6 +1,29 @@
-export function json(res, status, body) {
-  res.statusCode = status;
+// api/_utils/respond.js
+
+const ORIGIN = process.env.CORS_ORIGIN || 'http://localhost:8081';
+
+function setCommonHeaders(res) {
   res.setHeader('Content-Type', 'application/json');
+  res.setHeader('Access-Control-Allow-Origin', ORIGIN);
+  res.setHeader('Vary', 'Origin');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+}
+
+export function preflight(req, res) {
+  if (req.method === 'OPTIONS') {
+    setCommonHeaders(res);
+    res.statusCode = 204;
+    res.end();
+    return true;
+  }
+  return false;
+}
+
+export function json(res, status, body) {
+  setCommonHeaders(res);
+  res.statusCode = status;
   res.end(JSON.stringify(body));
 }
 

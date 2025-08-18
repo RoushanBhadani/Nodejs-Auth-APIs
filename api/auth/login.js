@@ -1,15 +1,19 @@
+// api/auth/login.js
 import { connectToDB } from '../../lib/db.js';
 import User from '../../models/User.js';
 import bcrypt from 'bcryptjs';
 import { loginSchema } from '../../lib/validate.js';
 import { signToken } from '../../lib/jwt.js';
 import { setAuthCookie } from '../../lib/cookies.js';
-import { ok, badRequest, unauthorized, methodNotAllowed, serverError } from '../_utils/respond.js';
+import { ok, badRequest, unauthorized, methodNotAllowed, serverError, preflight } from '../_utils/respond.js';
 
 export default async function handler(req, res) {
+  if (preflight(req, res)) return;
   if (req.method !== 'POST') return methodNotAllowed(res, ['POST']);
+
   try {
-    const parsed = loginSchema.safeParse(req.body);
+    const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : req.body;
+    const parsed = loginSchema.safeParse(body);
     if (!parsed.success) {
       return badRequest(res, 'Validation failed', parsed.error.flatten());
     }
@@ -39,3 +43,4 @@ export default async function handler(req, res) {
     return serverError(res, err);
   }
 }
+
