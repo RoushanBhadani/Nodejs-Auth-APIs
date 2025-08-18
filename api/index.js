@@ -20,8 +20,13 @@ app.use(express.json());
 // Connect DB once
 connectToDB().then(() => console.log("✅ MongoDB connected"));
 
-// Routes
-app.use("/api/auth", authRoutes);
+// Health check
+app.get("/", (req, res) => {
+  res.json({ message: "🚀 API is running fine" });
+});
 
-// ✅ Vercel requires *default export*
+// Routes (⚡ remove extra /api)
+app.use("/auth", authRoutes);
+
+// ✅ Vercel requires default export
 export default serverless(app);
