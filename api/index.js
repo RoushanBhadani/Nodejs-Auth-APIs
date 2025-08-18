@@ -9,24 +9,28 @@ dotenv.config();
 
 const app = express();
 
+// ✅ Allow frontend requests
 app.use(cors({
-  origin: "http://localhost:8081", 
+  origin: "http://localhost:8081",
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
 
 app.use(express.json());
 
-// Connect DB once
-connectToDB().then(() => console.log("✅ MongoDB connected"));
+// ✅ Ensure DB connects only once (global cache in serverless)
+let isConnected = false;
+async function initDB() {
+  if (!isConnected) {
+    await connectToDB();
+    isConnected = true;
+    console.log("✅ MongoDB connected");
+  }
+}
+initDB();
 
-// Health check
-app.get("/", (req, res) => {
-  res.json({ message: "🚀 API is running fine" });
-});
+// Routes
+app.use("/api/auth", authRoutes);
 
-// Routes (⚡ remove extra /api)
-app.use("/auth", authRoutes);
-
-// ✅ Vercel requires default export
+// ✅ Default export for Vercel
 export default serverless(app);
