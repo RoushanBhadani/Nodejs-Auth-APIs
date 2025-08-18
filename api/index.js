@@ -3,15 +3,14 @@ import dotenv from "dotenv";
 import cors from "cors";   
 import authRoutes from "../routes/auth.js";
 import { connectToDB } from "../lib/db.js";
-import serverless from "serverless-http";  // ✅ Add this package
+import serverless from "serverless-http";
 
 dotenv.config();
 
 const app = express();
 
-// ✅ Allow requests from frontend (localhost:8081)
 app.use(cors({
-  origin: "http://localhost:8081",
+  origin: "http://localhost:8081", 
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
@@ -24,5 +23,5 @@ connectToDB().then(() => console.log("✅ MongoDB connected"));
 // Routes
 app.use("/api/auth", authRoutes);
 
-// ✅ Export serverless handler for Vercel
-export const handler = serverless(app);
+// ✅ Vercel requires *default export*
+export default serverless(app);
